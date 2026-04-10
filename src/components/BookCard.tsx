@@ -74,7 +74,7 @@ export function BookCard({
 
           {/* Bookmark indicator */}
           {book.bookmarked_page > 0 && (
-            <div className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-primary/90 flex items-center justify-center shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+            <div className="absolute top-2 left-2 w-7 h-7 rounded-lg bg-primary/90 flex items-center justify-center shadow-[0_0_10px_rgba(236,72,153,0.5)]">
               <Bookmark className="w-3.5 h-3.5 text-white fill-white" />
             </div>
           )}

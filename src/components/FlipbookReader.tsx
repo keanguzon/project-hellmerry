@@ -129,10 +129,10 @@ export function FlipbookReader({
   useEffect(() => {
     function calc() {
       const toolbarH = 48;
-      const bottomH = 40;
+      const bottomH = isMobile ? 0 : 40;
       const sideW = sidebarOpen && !isMobile ? 288 : 0;
-      const padY = 32;
-      const padX = 64; // Generous horizontal padding to ensure arrows fit
+      const padY = isMobile ? 16 : 32;
+      const padX = isMobile ? 0 : 64; // Generous horizontal padding to ensure arrows fit
 
       const availH = window.innerHeight - toolbarH - bottomH - padY;
       const availW = window.innerWidth - sideW - padX;
@@ -434,29 +434,27 @@ export function FlipbookReader({
   return (
     <div
       ref={containerRef}
-      className={`flex h-full overflow-hidden ${isFullscreen ? "bg-background" : ""}`}
+      className={`flex h-full overflow-hidden relative ${isFullscreen || isMobile ? "bg-background" : ""}`}
     >
-      {/* Mobile sidebar backdrop */}
-      {sidebarOpen && (
+      {/* Mobile sidebar backdrop (transparent to allow toggling off) */}
+      {sidebarOpen && isMobile && (
         <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          className="fixed inset-0 z-30"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* ============ SIDEBAR ============ */}
+      {/* ============ SIDEBAR / DROPDOWN ============ */}
       <aside
         className={`
-          ${sidebarOpen ? "w-72 border-r translate-x-0" : "w-0 border-r-0 -translate-x-full md:translate-x-0"}
-          fixed md:relative z-40 md:z-auto
-          h-full
-          glass-strong border-border
-          transition-all duration-300 ease-in-out
-          flex flex-col shrink-0
-          overflow-hidden whitespace-nowrap
+          ${isMobile 
+            ? `absolute top-12 right-2 max-w-[300px] w-[calc(100vw-16px)] rounded-xl shadow-2xl glass-strong border border-border z-40 transition-all origin-top-right ${sidebarOpen ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"}` 
+            : `${sidebarOpen ? "w-72 border-r translate-x-0" : "w-0 border-r-0 -translate-x-full md:translate-x-0"} relative z-40 h-full glass-strong border-border transition-all duration-300 ease-in-out`
+          }
+          flex flex-col shrink-0 overflow-hidden whitespace-nowrap ${isMobile ? 'max-h-[60vh] h-auto' : 'h-full'}
         `}
       >
-        <div className="w-72 flex flex-col h-full">
+        <div className="w-full sm:w-72 flex flex-col h-full items-stretch">
           {/* Sidebar header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
             <span className="text-sm font-semibold text-foreground">
@@ -587,13 +585,13 @@ export function FlipbookReader({
       {/* ============ MAIN CONTENT ============ */}
       <div className="flex-1 flex flex-col min-w-0 h-full">
         {/* Toolbar */}
-        <div className="flex items-center justify-between px-2 sm:px-3 py-2 shrink-0">
+        <div className="flex items-center justify-between px-2 sm:px-3 py-2 shrink-0 h-12 z-20">
           <div className="flex items-center gap-0.5">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="text-muted hover:text-foreground"
+              className="hidden sm:flex text-muted hover:text-foreground"
               title="Reading tools"
             >
               {sidebarOpen ? (
@@ -606,7 +604,7 @@ export function FlipbookReader({
               variant="ghost"
               size="sm"
               onClick={onBack}
-              className="gap-1 text-muted hover:text-foreground"
+              className="gap-1 text-muted hover:text-foreground px-2"
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline text-xs">Back</span>
@@ -622,11 +620,11 @@ export function FlipbookReader({
               variant="ghost"
               size="icon"
               onClick={() => {
-                setAddingBookmark(true);
-                setSidebarOpen(true);
+                if (!sidebarOpen) setAddingBookmark(true);
+                setSidebarOpen(!sidebarOpen);
               }}
-              className="text-muted hover:text-primary mr-1"
-              title="Add Bookmark"
+              className={`hover:text-primary mr-1 ${sidebarOpen ? 'text-primary bg-primary/10' : 'text-muted'}`}
+              title="Bookmarks"
             >
               <BookmarkPlus className="w-4 h-4" />
             </Button>
@@ -647,21 +645,21 @@ export function FlipbookReader({
         </div>
 
         {/* Book area */}
-        <div className="flex-1 overflow-auto w-full py-8">
-          <div className="min-h-full flex px-4">
-            {/* Prev nav */}
+        <div className="flex-1 w-full flex items-center justify-center overflow-hidden relative">
+          <div className="flex items-center justify-center w-full h-full">
+            {/* Prev nav (desktop only) */}
             <button
               onClick={prevPage}
-              className="hidden sm:flex sticky left-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted hover:text-primary transition-colors z-20"
+              className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted hover:text-primary transition-colors z-20"
               aria-label="Previous page"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
 
-            {/* Flipbook + overlay wrapper */}
-            {/* margin: auto instead of justify-center ensures left/top edges don't get cut off on small screens / zoomed states */}
+            {/* Flipbook wrapper */}
+            {/* margin: auto and overflow-visible ensures natural sizing inside the flex container */}
             <div 
-              className="relative shrink-0 mx-auto"
+              className="relative shrink-0 flex items-center justify-center"
               style={{ 
                 width: forcePortrait ? dimensions.width : dimensions.width * 2, 
                 height: dimensions.height 
@@ -709,10 +707,10 @@ export function FlipbookReader({
 
           </div>
 
-            {/* Next nav */}
+            {/* Next nav (desktop only) */}
             <button
               onClick={nextPage}
-              className="hidden sm:flex sticky right-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted hover:text-primary transition-colors z-20"
+              className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted hover:text-primary transition-colors z-20"
               aria-label="Next page"
             >
               <ChevronRight className="w-5 h-5" />
@@ -720,16 +718,8 @@ export function FlipbookReader({
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="flex items-center justify-center gap-4 py-2 shrink-0">
-          <button
-            onClick={prevPage}
-            className="sm:hidden w-8 h-8 rounded-full glass flex items-center justify-center text-muted active:text-primary transition-colors touch-manipulation"
-            aria-label="Previous page"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
+        {/* Bottom bar (desktop only) */}
+        <div className="hidden sm:flex items-center justify-center gap-4 py-2 shrink-0">
           <p className="text-xs text-muted">
             Page{" "}
             <span className="text-foreground font-medium">
@@ -737,14 +727,13 @@ export function FlipbookReader({
             </span>{" "}
             of {pdfPageCount}
           </p>
+        </div>
 
-          <button
-            onClick={nextPage}
-            className="sm:hidden w-8 h-8 rounded-full glass flex items-center justify-center text-muted active:text-primary transition-colors touch-manipulation"
-            aria-label="Next page"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+        {/* Mobile Page Badge Overlay */}
+        <div className="sm:hidden absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+          <div className="glass px-3 py-1.5 rounded-full text-[10px] text-muted-foreground shadow-lg backdrop-blur-md bg-black/40 border border-white/10">
+            {Math.min(currentPage + 1, pdfPageCount)} / {pdfPageCount}
+          </div>
         </div>
       </div>
     </div>
