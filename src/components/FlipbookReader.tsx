@@ -398,16 +398,30 @@ export function FlipbookReader({
 
   const toggleFullscreen = async () => {
     if (!containerRef.current) return;
+    
+    // Check if we are currently native-fullscreen OR CSS-fullscreen
+    const isCurrentlyFullscreen = !!document.fullscreenElement || isFullscreen;
+
     try {
-      if (!document.fullscreenElement) {
-        await containerRef.current.requestFullscreen();
+      if (!isCurrentlyFullscreen) {
+        if (containerRef.current.requestFullscreen) {
+          await containerRef.current.requestFullscreen();
+        } else if ((containerRef.current as any).webkitRequestFullscreen) {
+          await (containerRef.current as any).webkitRequestFullscreen();
+        }
         setIsFullscreen(true);
       } else {
-        await document.exitFullscreen();
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        }
         setIsFullscreen(false);
       }
     } catch {
-      /* not supported */
+      // Fallback: If native fullscreen is rejected or unavailable (e.g., iPhone Safari),
+      // we just simulate it by toggling the CSS state anyway!
+      setIsFullscreen(!isCurrentlyFullscreen);
     }
   };
 
@@ -436,7 +450,7 @@ export function FlipbookReader({
   return (
     <div
       ref={containerRef}
-      className={`flex h-full overflow-hidden relative ${isFullscreen || isMobile ? "bg-background" : ""}`}
+      className={`flex h-full overflow-hidden relative ${isFullscreen || isMobile ? "bg-background" : ""} ${isFullscreen ? "fixed inset-0 z-50" : ""}`}
     >
       {/* Mobile sidebar backdrop (transparent to allow toggling off) */}
       {sidebarOpen && isMobile && (
@@ -649,10 +663,10 @@ export function FlipbookReader({
         {/* Book area */}
         <div className="flex-1 w-full flex items-center justify-center overflow-hidden relative">
           <div className="flex items-center justify-center w-full h-full">
-            {/* Prev nav (desktop only) */}
+            {/* Prev nav */}
             <button
               onClick={prevPage}
-              className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted hover:text-primary transition-colors z-20"
+              className="flex absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted shadow-xl border border-white/10 hover:text-primary hover:scale-105 transition-all z-20"
               aria-label="Previous page"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -709,10 +723,10 @@ export function FlipbookReader({
 
           </div>
 
-            {/* Next nav (desktop only) */}
+            {/* Next nav */}
             <button
               onClick={nextPage}
-              className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted hover:text-primary transition-colors z-20"
+              className="flex absolute right-1 sm:right-4 top-1/2 -translate-y-1/2 shrink-0 w-10 h-10 rounded-full glass items-center justify-center text-muted shadow-xl border border-white/10 hover:text-primary hover:scale-105 transition-all z-20"
               aria-label="Next page"
             >
               <ChevronRight className="w-5 h-5" />
