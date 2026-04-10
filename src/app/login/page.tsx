@@ -131,12 +131,20 @@ function LoginPageInner() {
               />
 
               <div className="space-y-1.5">
-                <label
-                  htmlFor="login-password"
-                  className="block text-sm font-medium text-gray-300"
-                >
-                  Password
-                </label>
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="login-password"
+                    className="block text-sm font-medium text-gray-300"
+                  >
+                    Password
+                  </label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs text-primary hover:text-white transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <div className="relative">
                   <input
                     id="login-password"

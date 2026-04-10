@@ -178,7 +178,7 @@ export function FlipbookReader({
         const pdfjsLib = await import("pdfjs-dist");
         pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
-        const cacheKey = `${pdfUrl}_v3`;
+        const cacheKey = `${pdfUrl}_v4_mobile_${window.innerWidth < 768}`;
         // Try cache first
         const cached = await getCachedPages(cacheKey);
         if (cached && cached.length > 0 && !cancelled) {
@@ -217,8 +217,10 @@ export function FlipbookReader({
             firstH = baseVp.height;
           }
           
-          const targetH = 1600; // High resolution target
-          const scale = Math.min(targetH / baseVp.height, 4);
+          // Downscale resolution massively on mobile to prevent Out-of-Memory browser crashes
+          const isPhone = window.innerWidth < 768;
+          const targetH = isPhone ? 900 : 1600; 
+          const scale = Math.min(targetH / baseVp.height, isPhone ? 2 : 4);
           
           const viewport = page.getViewport({ scale });
           
@@ -228,7 +230,7 @@ export function FlipbookReader({
           const ctx = canvas.getContext("2d")!;
           await page.render({ canvasContext: ctx, viewport } as any).promise;
 
-          pageImages.push(canvas.toDataURL("image/jpeg", 0.85));
+          pageImages.push(canvas.toDataURL("image/jpeg", isPhone ? 0.6 : 0.85));
           setLoadingProgress(Math.round((i / numPages) * 100));
         }
 
