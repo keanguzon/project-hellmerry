@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Rocket, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import Galaxy from "@/components/Galaxy";
 import Link from "next/link";
 
 export default function DashboardLayout({
@@ -23,23 +22,6 @@ export default function DashboardLayout({
 
   return (
     <div className="relative min-h-dvh">
-      {/* Galaxy Background — fixed behind everything */}
-      <div className="fixed inset-0 z-0">
-        <Galaxy
-          starSpeed={0.5}
-          density={1}
-          hueShift={320}
-          speed={1}
-          glowIntensity={0.8}
-          saturation={1}
-          mouseRepulsion={false}
-          repulsionStrength={2}
-          twinkleIntensity={0.5}
-          rotationSpeed={0.1}
-          transparent={false}
-        />
-      </div>
-
       {/* Top Nav */}
       <header className="sticky top-0 z-30 glass-strong safe-top">
         <div className="flex items-center justify-between px-4 sm:px-6 h-14 sm:h-16 max-w-7xl mx-auto">

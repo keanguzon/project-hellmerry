@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 import { FlipbookReader } from "@/components/FlipbookReader";
 import { Loader2 } from "lucide-react";
 import type { Book } from "@/types/database";
-import Galaxy from "@/components/Galaxy";
 
 export default function BookReaderPage() {
   const params = useParams();
@@ -40,21 +39,6 @@ export default function BookReaderPage() {
   if (loading) {
     return (
       <div className="relative min-h-dvh flex items-center justify-center">
-        <div className="fixed inset-0 z-0">
-          <Galaxy
-            starSpeed={0.5}
-            density={1}
-            hueShift={320}
-            speed={1}
-            glowIntensity={0.8}
-            saturation={1}
-            mouseRepulsion={false}
-            repulsionStrength={2}
-            twinkleIntensity={0.5}
-            rotationSpeed={0.1}
-            transparent={false}
-          />
-        </div>
         <Loader2 className="relative z-10 w-10 h-10 text-primary animate-spin" />
       </div>
     );
@@ -63,21 +47,6 @@ export default function BookReaderPage() {
   if (error || !book) {
     return (
       <div className="relative min-h-dvh flex flex-col items-center justify-center gap-4">
-        <div className="fixed inset-0 z-0">
-          <Galaxy
-            starSpeed={0.5}
-            density={1}
-            hueShift={320}
-            speed={1}
-            glowIntensity={0.8}
-            saturation={1}
-            mouseRepulsion={false}
-            repulsionStrength={2}
-            twinkleIntensity={0.5}
-            rotationSpeed={0.1}
-            transparent={false}
-          />
-        </div>
         <div className="relative z-10 text-center">
           <p className="text-lg text-destructive mb-4">{error || "Book not found"}</p>
           <button
@@ -92,23 +61,8 @@ export default function BookReaderPage() {
   }
 
   return (
-    <div className="relative min-h-dvh">
-      <div className="fixed inset-0 z-0">
-        <Galaxy
-          starSpeed={0.5}
-          density={1}
-          hueShift={320}
-          speed={1}
-          glowIntensity={0.8}
-          saturation={1}
-          mouseRepulsion={false}
-          repulsionStrength={2}
-          twinkleIntensity={0.5}
-          rotationSpeed={0.1}
-          transparent={false}
-        />
-      </div>
-      <div className="relative z-10 px-4 sm:px-6 py-4 sm:py-6 max-w-5xl mx-auto safe-top safe-bottom">
+    <div className="relative h-dvh">
+      <div className="relative z-10 h-full">
         <FlipbookReader
           bookId={book.id}
           pdfUrl={book.pdf_url}

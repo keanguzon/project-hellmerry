@@ -85,6 +85,12 @@ project-hellmerry/
 
 2. **Run the SQL schema** in your Supabase SQL Editor:
    - Open [supabase/schema.sql](file:///c:/Users/bibliyuh/Documents/code/project-hellmerry/supabase/schema.sql) and paste it.
+   - If you see: `Could not find the table 'public.books' in the schema cache`, it means this SQL has not been applied yet (or was applied to a different Supabase project).
+   - Quick verify in SQL Editor:
+     ```sql
+     select to_regclass('public.books');
+     ```
+     If this returns `null`, run the full schema file again, then refresh the app.
 
 3. **Configure OAuth providers** (optional) in Supabase Dashboard → Authentication → Providers.
 
