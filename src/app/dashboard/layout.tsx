@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Rocket, LogOut, UserCircle } from "lucide-react";
+import { LogOut, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
@@ -45,7 +45,14 @@ export default function DashboardLayout({
             href="/dashboard"
             className="flex items-center gap-2 touch-manipulation"
           >
-            <Rocket className="w-6 h-6 text-primary" />
+            <Image
+              src="/logo.png"
+              alt="Hellmerry logo"
+              width={24}
+              height={24}
+              priority
+              className="w-6 h-6 object-contain drop-shadow-[0_0_12px_rgba(236,72,153,0.95)]"
+            />
             <span className="text-sm sm:text-base font-bold text-glow tracking-wide uppercase">
               HELLMERRY LIBRARY
             </span>

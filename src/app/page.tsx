@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Rocket, BookOpen, Bookmark } from "lucide-react";
+import Image from "next/image";
+import { BookOpen, Bookmark } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -8,9 +9,16 @@ export default function LandingPage() {
       {/* Centered Main Content Area */}
       <main className="flex flex-col items-center max-w-lg w-full z-10 pointer-events-auto">
         
-        {/* Rocket Logo Box */}
-        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl border sm:border-2 border-primary/40 flex items-center justify-center mb-8 sm:mb-10 shadow-[0_0_30px_rgba(236,72,153,0.15)] bg-black/20 backdrop-blur-sm">
-          <Rocket className="w-10 h-10 sm:w-12 sm:h-12 text-primary drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]" />
+        {/* Brand Logo Box */}
+        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl border sm:border-2 border-primary/50 flex items-center justify-center mb-8 sm:mb-10 shadow-[0_0_35px_rgba(236,72,153,0.35)] bg-black/20 backdrop-blur-sm">
+          <Image
+            src="/logo.png"
+            alt="Hellmerry logo"
+            width={64}
+            height={64}
+            priority
+            className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_18px_rgba(236,72,153,0.95)]"
+          />
         </div>
 
         {/* Typography */}
@@ -45,7 +53,15 @@ export default function LandingPage() {
           <span className="text-xs font-medium tracking-wide">Upload</span>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <Rocket className="w-5 h-5 text-primary/80" />
+          <div className="relative w-5 h-5">
+            <Image
+              src="/logo.png"
+              alt="Read"
+              fill
+              sizes="20px"
+              className="object-contain drop-shadow-[0_0_12px_rgba(236,72,153,0.9)]"
+            />
+          </div>
           <span className="text-xs font-medium tracking-wide">Read</span>
         </div>
         <div className="flex flex-col items-center gap-2">

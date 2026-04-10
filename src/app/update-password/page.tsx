@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
@@ -24,8 +24,7 @@ export default function UpdatePasswordPage() {
   const { toast } = useToast();
   const supabase = createClient();
 
-  // Supabase automatically handles the access_token in the URL hash and establishes a session.
-  // We just need to call updateUser() to set the new password on that active session.
+  // The recovery session is established in /auth/callback before redirecting here.
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();

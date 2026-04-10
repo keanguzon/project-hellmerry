@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
@@ -15,7 +16,7 @@ import {
   CardFooter,
 } from "@/components/ui/Card";
 import { useToast } from "@/components/ui/Toast";
-import { Loader2, Eye, EyeOff, Rocket } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -126,7 +127,14 @@ export default function RegisterPage() {
                 href="/"
                 className="flex items-center gap-2 hover:scale-105 transition-transform duration-200 touch-manipulation"
               >
-                <Rocket className="w-8 h-8 text-primary" />
+                <Image
+                  src="/logo.png"
+                  alt="Hellmerry logo"
+                  width={32}
+                  height={32}
+                  priority
+                  className="w-8 h-8 object-contain drop-shadow-[0_0_14px_rgba(236,72,153,0.95)]"
+                />
                 <span className="text-xl font-bold text-glow">HELLMERRY</span>
               </Link>
             </div>
